@@ -26,9 +26,11 @@ const dayLabel = daysSince === 1 ? "DAY" : "DAYS";
 ---
 
 <Layout title="FLI Web Team - Days Without Website Request">
-  <main class="min-h-screen flex flex-col items-center justify-center py-12">
+  <main
+    class="min-h-screen flex flex-col items-center justify-center py-12 scan-line"
+  >
     <!-- Header -->
-    <header class="w-3xl text-center mb-12 px-12 lg:px-20 scan-line">
+    <header class="w-3xl text-center mb-12 px-12 lg:px-20">
       <h1 class="text-3xl md:text-6xl font-bold mt-6 mb-4 glow-text">
         <span class="text-8xl md:text-9xl block mb-4">{daysSince}</span>
         {dayLabel} WITHOUT A NEW WEBSITE REQUEST FOR THE FLI WEB TEAM
