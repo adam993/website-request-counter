@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-900 text-terminal-text font-mono;
+  }
+}
+
+@layer components {
+  .terminal-border {
+    @apply border-2 border-terminal-border rounded-lg;
+  }
+
+  .terminal-box {
+    @apply bg-terminal-bg terminal-border p-6;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+  }
+
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scan-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 0, 0.1) 50%,
+      transparent 100%
+    );
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes scan {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+}
