@@ -1,29 +1,46 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import fs from "fs";
-import path from "path";
-
-// Read the date from the public file
-const dateFilePath = path.join(process.cwd(), "public", "last-reset-date.txt");
-let daysSince = 0;
-
-try {
-  const dateString = fs.readFileSync(dateFilePath, "utf-8").trim();
-  // Parse DD.MM.YYYY format
-  const [day, month, year] = dateString.split(".").map(Number);
-  const resetDate = new Date(year, month - 1, day);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  resetDate.setHours(0, 0, 0, 0);
-  daysSince = Math.floor(
-    (today.getTime() - resetDate.getTime()) / (1000 * 60 * 60 * 24),
-  );
-} catch (e) {
-  daysSince = 0;
-}
-
-const dayLabel = daysSince === 1 ? "DAY" : "DAYS";
 ---
+
+<script>
+  async function updateDaysSince() {
+    let daysSince = 0;
+    let dayLabel = "DAYS";
+
+    try {
+      const response = await fetch("/last-reset-date.txt");
+      const dateString = await response.text();
+      // Parse DD.MM.YYYY format
+      const [day, month, year] = dateString.trim().split(".").map(Number);
+      const resetDate = new Date(year, month - 1, day);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      resetDate.setHours(0, 0, 0, 0);
+      daysSince = Math.floor(
+        (today.getTime() - resetDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      dayLabel = daysSince === 1 ? "DAY" : "DAYS";
+    } catch (e) {
+      daysSince = 0;
+      dayLabel = "DAYS";
+    }
+
+    const daysSinceElement = document.getElementById("daysSinceValue");
+    const dayLabelElement = document.getElementById("dayLabel");
+
+    if (daysSinceElement) {
+      daysSinceElement.textContent = daysSince.toString();
+    }
+    if (dayLabelElement) {
+      dayLabelElement.textContent = dayLabel;
+    }
+  }
+
+  // Update on page load
+  updateDaysSince();
+  // Update every hour to keep it fresh
+  setInterval(updateDaysSince, 3600000);
+</script>
 
 <Layout title="FLI Web Team - Days Without Website Request">
   <main
@@ -32,8 +49,11 @@ const dayLabel = daysSince === 1 ? "DAY" : "DAYS";
     <!-- Header -->
     <header class="w-3xl text-center mb-12 px-12 lg:px-20">
       <h1 class="text-3xl md:text-6xl font-bold mt-6 mb-4 glow-text">
-        <span class="text-8xl md:text-9xl block mb-4">{daysSince}</span>
-        {dayLabel} WITHOUT A NEW WEBSITE REQUEST FOR THE FLI WEB TEAM
+        <span class="text-8xl md:text-9xl block mb-4" id="daysSinceValue"
+          >-</span
+        >
+        <span id="dayLabel">DAYS</span> WITHOUT A NEW WEBSITE REQUEST FOR THE FLI
+        WEB TEAM
       </h1>
     </header>
 
